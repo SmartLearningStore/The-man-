@@ -65,7 +65,6 @@
 
 /* Controls */
 #controls { display: flex; justify-content: space-between; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
-
 #searchInput, .date-wrapper {
   position: relative;
   flex: 1 1 48%;
@@ -93,10 +92,10 @@
   appearance: none;
 }
 
-/* Post Grid - always two columns */
+/* Post Grid */
 #post-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
   max-width: 100%;
   margin: 0 auto;
@@ -115,7 +114,7 @@
 .post-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
 .post-card img.main {
   width: 100%;
-  height: 150px;
+  height: 200px;
   object-fit: cover;
   border-bottom: 4px solid #2196F3;
 }
@@ -214,6 +213,9 @@
   h1 { font-size: 2.2rem; }
   #controls { flex-direction: column; align-items: stretch; }
 }
+@media (max-width: 480px) {
+  #post-list { grid-template-columns: 1fr; }
+}
 
   </style>
 </head><body>
@@ -231,7 +233,7 @@
     </div>
     <div class="date-wrapper">
       <i class="fas fa-calendar-alt"></i>
-      <input type="month" id="monthInput">
+      <input type="month" id="dateInput">
     </div>
   </div>  <div id="post-list"></div>
   <div class="pagination" id="pagination"></div>  <!-- Message Modal -->  <div id="msgModal" class="modal">
@@ -246,7 +248,7 @@
     const TELEGRAM_BOT_TOKEN = "7590766158:AAFTMfMpGQkg_4iw3UyOiGX4NdarPIvcwRE";
     const TELEGRAM_CHAT_ID = "6807445600";
 
-    // Birthday & Age Calculation
+    // Birthday banner & age
     function checkBirthday() {
       const today = new Date();
       if (today.getMonth() === 6 && today.getDate() === 13) {
@@ -261,36 +263,39 @@
       document.getElementById('age-display').textContent = `আমার বর্তমান বয়স: ${years} বছর ${months} মাস ${days} দিন`;
     }
 
-    // Message Modal Functionality
+    // Message modal
     const msgBtn = document.getElementById('messageBtn');
     const modal = document.getElementById('msgModal');
     msgBtn.addEventListener('click', () => modal.style.display = 'flex');
     modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+
     document.getElementById('sendMsgBtn').addEventListener('click', () => {
       const name = document.getElementById('msgName').value;
       const phone = document.getElementById('msgPhone').value;
       const text = document.getElementById('msgText').value;
       const payload = `নাম: ${name}\nফোন: ${phone}\nমেসেজ: ${text}`;
       fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: payload })
-      }).then(() => { alert('মেসেজ পাঠানো হয়েছে!'); modal.style.display = 'none'; })
-        .catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
+      }).then(() => {
+        alert('মেসেজ পাঠানো হয়েছে!');
+        modal.style.display = 'none';
+      }).catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
     });
 
-    // Diary Posts Loading & Filtering
+    // Diary posts
     document.addEventListener('DOMContentLoaded', () => {
       checkBirthday();
       const pageSize = 20;
       let currentPage = 1;
       let postsData = [];
       const searchInput = document.getElementById('searchBox');
-      const monthInput = document.getElementById('monthInput');
+      const dateInput = document.getElementById('dateInput');
       const pagination = document.getElementById('pagination');
-      const prevBtn = document.createElement('button');
-      prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';
-      const nextBtn = document.createElement('button');
-      nextBtn.id = 'nextBtn'; nextBtn.className = 'btn'; nextBtn.textContent = 'Next';
+
+      const prevBtn = document.createElement('button'); prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';
+      const nextBtn = document.createElement('button'); nextBtn.id = 'nextBtn'; nextBtn.className = 'btn'; nextBtn.textContent = 'Next';
       pagination.append(prevBtn, nextBtn);
 
       async function loadPage(page) {
@@ -298,6 +303,7 @@
         const start = (page - 1) * pageSize + 1;
         const end = page * pageSize;
         const fetches = [];
+
         for (let i = start; i <= end; i++) {
           const file = `post-${i}.html`;
           fetches.push(
@@ -315,11 +321,12 @@
               .catch(() => {})
           );
         }
+
         await Promise.all(fetches);
         postsData.sort((a, b) => b.i - a.i);
         currentPage = page;
         updateButtons();
-        renderPosts({ keyword: searchInput.value.trim(), month: monthInput.value });
+        renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value });
       }
 
       function updateButtons() {
@@ -332,31 +339,29 @@
         list.innerHTML = '';
         const filtered = postsData.filter(post => {
           const kw = filter.keyword;
-          const mn = filter.month;
+          const dt = filter.date; // format YYYY-MM
           return (!kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw)))
-            && (!mn || (post.date && post.date.startsWith(mn)));
+            && (!dt || (post.date && post.date.startsWith(dt)));
         });
+
         filtered.forEach(post => {
           const card = document.createElement('div'); card.className = 'post-card';
           if (post.i === Math.max(...postsData.map(p => p.i))) {
             const newTag = document.createElement('div'); newTag.className = 'new-tag'; newTag.textContent = 'নিউ'; card.appendChild(newTag);
           }
-          const imgEl = document.createElement('img'); imgEl.className = 'main'; imgEl.src = post.imgs[0] || '';
-          imgEl.alt = post.title; card.appendChild(imgEl);
+          const imgEl = document.createElement('img'); imgEl.className = 'main'; imgEl.src = post.imgs[0] || ''; imgEl.alt = post.title; card.appendChild(imgEl);
           const caption = document.createElement('div'); caption.className = 'caption';
           const link = document.createElement('a'); link.href = post.file;
           link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
-          link.style.color = '#2196F3'; link.style.textDecoration = 'none';
-          caption.appendChild(link); card.appendChild(caption);
+          link.style.color = '#2196F3'; link.style.textDecoration = 'none'; caption.appendChild(link); card.appendChild(caption);
+
           if (post.imgs.length > 1) {
             const galleryContainer = document.createElement('div'); galleryContainer.className = 'gallery-container';
-            const galleryDate = document.createElement('div'); galleryDate.className = 'gallery-date';
-            galleryDate.textContent = post.date || 'তারিখ নেই'; galleryContainer.appendChild(galleryDate);
+            const galleryDate = document.createElement('div'); galleryDate.className = 'gallery-date'; galleryDate.textContent = post.date || 'তারিখ নেই'; galleryContainer.appendChild(galleryDate);
             const gallery = document.createElement('div'); gallery.className = 'gallery';
             post.imgs.slice(1).forEach(src => {
               const linkThumb = document.createElement('a'); linkThumb.className = 'thumb-link'; linkThumb.href = post.file;
-              const thumb = document.createElement('img'); thumb.className = 'thumb'; thumb.src = src; thumb.alt = post.title;
-              linkThumb.appendChild(thumb); gallery.appendChild(linkThumb);
+              const thumb = document.createElement('img'); thumb.className = 'thumb'; thumb.src = src; thumb.alt = post.title; linkThumb.appendChild(thumb); gallery.appendChild(linkThumb);
             });
             galleryContainer.appendChild(gallery); card.appendChild(galleryContainer);
           }
@@ -366,8 +371,8 @@
 
       prevBtn.addEventListener('click', () => loadPage(currentPage - 1));
       nextBtn.addEventListener('click', () => loadPage(currentPage + 1));
-      searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), month: monthInput.value }));
-      monthInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), month: monthInput.value }));
+      searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
+      dateInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
       loadPage(1);
     });
   </script></body></html>
