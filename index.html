@@ -17,6 +17,7 @@
       text-align: center;
     }
     header {
+      position: relative;
       margin-bottom: 1.5rem;
       text-shadow: 1px 1px 8px #2196F3;
     }
@@ -28,11 +29,44 @@
       transition: transform 0.3s ease;
     }
     h1:hover { transform: perspective(500px) rotateX(25deg); }
-    p {
-      font-size: 1rem;
-      color: #b0bec5;
-      line-height: 1.6;
-    }/* Controls */
+    p { font-size: 1rem; color: #b0bec5; line-height: 1.6; }/* Icon Button */
+.btn-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  outline: 2px solid #2196F3;
+  background: transparent;
+  color: #2196F3;
+  padding: 0.6rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-size: 1.2rem;
+}
+.btn-icon:active { transform: scale(0.9); }
+
+/* Birthday Banner */
+#birthday-banner {
+  display: none;
+  background: #ffeb3b;
+  color: #0f1117;
+  padding: 0.8rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Age Display & Journey */
+#age-display, #journey {
+  margin: 0.5rem 0;
+}
+#journey { font-size: 1.2rem; color: #f8bbd0; }
+
+/* Controls */
 #controls {
   display: flex;
   justify-content: space-between;
@@ -86,15 +120,9 @@
   display: flex;
   flex-direction: column;
 }
-.post-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-}
+.post-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
 .post-card img.main {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
+  width: 100%; height: 200px; object-fit: cover;
   border-bottom: 4px solid #2196F3;
 }
 .post-card .caption {
@@ -104,49 +132,30 @@
   text-align: center;
 }
 .new-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #ffeb3b;
-  color: #0f1117;
-  padding: 6px 12px;
-  border-radius: 5px;
+  position: absolute; top: 10px; right: 10px;
+  background-color: #ffeb3b; color: #0f1117;
+  padding: 6px 12px; border-radius: 5px;
   font-size: 1rem;
 }
 
-/* Gallery */
-.gallery-container {
-  padding: 0.5rem;
-  background: #424242;
-}
-.gallery-date {
-  color: #b0bec5;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
+/* Gallery Grid */
+.gallery-container { padding: 0.5rem; background: #424242; }
+.gallery-date { color: #b0bec5; font-size: 0.9rem; margin-bottom: 0.5rem; }
 .gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
+  justify-items: center;
 }
-.gallery .thumb-link {
-  display: inline-block;
-  outline: none;
-}
+.thumb-link { display: inline-block; outline: none; }
 .thumb {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
+  width: 50px; height: 50px;
+  object-fit: cover; border-radius: 4px;
   border: 2px solid #2196F3;
   transition: transform 0.2s ease;
   cursor: pointer;
 }
-.thumb-link:hover .thumb {
-  transform: scale(1.1);
-}
+.thumb-link:hover .thumb { transform: scale(1.1); }
 
 /* Pagination Buttons */
 .pagination {
@@ -163,14 +172,32 @@
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s ease;
-  position: relative;
-  overflow: hidden;
   font-size: 1rem;
 }
 .btn:active { transform: scale(0.95); }
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center; align-items: center;
+  z-index: 1001;
+}
+.modal-content {
+  background: #303030;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 90%; max-width: 400px;
+  text-align: left;
+}
+.modal-content input, .modal-content textarea {
+  width: 100%; padding: 0.8rem; margin-bottom: 1rem;
+  border: none; border-radius: 8px;
+  background: #424242; color: #e0e0e0;
+  box-sizing: border-box;
 }
 
 /* Responsive */
@@ -185,9 +212,13 @@
   </style>
 </head>
 <body>
+  <div id="birthday-banner">আজকে আমার জন্মদিন 🎉</div>
   <header>
     <h1>আমার প্রতিদিনের ডায়রি</h1>
     <p>আপনার অনুভব করা দিনগুলো খুঁজে নিন...</p>
+    <div id="age-display"></div>
+    <div id="journey">DK Shuvo's Journey</div>
+    <button id="messageBtn" class="btn-icon"><i class="fas fa-envelope"></i></button>
   </header>  <div id="controls">
     <div id="searchInput">
       <i class="fas fa-search search-icon"></i>
@@ -198,8 +229,57 @@
       <input type="date" id="dateInput">
     </div>
   </div>  <div id="post-list"></div>
-  <div class="pagination" id="pagination"></div>  <script>
+  <div class="pagination" id="pagination"></div>  <!-- Message Modal -->  <div id="msgModal" class="modal">
+    <div class="modal-content">
+      <h3>মেসেজ পাঠান</h3>
+      <input type="text" id="msgName" placeholder="নাম">
+      <input type="text" id="msgPhone" placeholder="ফোন নাম্বার">
+      <textarea id="msgText" rows="4" placeholder="মেসেজ লিখুন..."></textarea>
+      <button id="sendMsgBtn" class="btn">সেন্ড</button>
+    </div>
+  </div>  <script>
+    const TELEGRAM_BOT_TOKEN = "7590766158:AAFTMfMpGQkg_4iw3UyOiGX4NdarPIvcwRE";
+    const TELEGRAM_CHAT_ID = "6807445600";
+
+    // Birthday banner & age
+    function checkBirthday() {
+      const today = new Date();
+      if (today.getMonth() === 6 && today.getDate() === 13) {
+        document.getElementById('birthday-banner').style.display = 'block';
+      }
+      const birth = new Date(2007, 6, 13);
+      let years = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth() - birth.getMonth();
+      let days = today.getDate() - birth.getDate();
+      if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+      if (months < 0) { years--; months += 12; }
+      document.getElementById('age-display').textContent = `বয়স: ${years} বছর ${months} মাস ${days} দিন`;
+    }
+
+    // Message modal
+    const msgBtn = document.getElementById('messageBtn');
+    const modal = document.getElementById('msgModal');
+    msgBtn.addEventListener('click', () => modal.style.display = 'flex');
+    modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+
+    document.getElementById('sendMsgBtn').addEventListener('click', () => {
+      const name = document.getElementById('msgName').value;
+      const phone = document.getElementById('msgPhone').value;
+      const text = document.getElementById('msgText').value;
+      const payload = `নাম: ${name}\nফোন: ${phone}\nমেসেজ: ${text}`;
+      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: payload })
+      }).then(() => {
+        alert('মেসেজ পাঠানো হয়েছে!');
+        modal.style.display = 'none';
+      }).catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
+    });
+
+    // Diary posts
     document.addEventListener('DOMContentLoaded', () => {
+      checkBirthday();
       const pageSize = 20;
       let currentPage = 1;
       let postsData = [];
@@ -207,14 +287,12 @@
       const dateInput = document.getElementById('dateInput');
       const pagination = document.getElementById('pagination');
 
-      // Create Prev/Next Buttons
       const prevBtn = document.createElement('button');
       prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';
       const nextBtn = document.createElement('button');
       nextBtn.id = 'nextBtn'; nextBtn.className = 'btn'; nextBtn.textContent = 'Next';
       pagination.append(prevBtn, nextBtn);
 
-      // Load a specific page of posts
       async function loadPage(page) {
         postsData = [];
         const start = (page - 1) * pageSize + 1;
@@ -255,73 +333,37 @@
         const filtered = postsData.filter(post => {
           const kw = filter.keyword;
           const dt = filter.date;
-          const kwMatch = !kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw));
-          const dtMatch = !dt || post.date === dt;
-          return kwMatch && dtMatch;
+          return (!kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw)))
+            && (!dt || post.date === dt);
         });
-
         filtered.forEach(post => {
-          const card = document.createElement('div');
-          card.className = 'post-card';
-
+          const card = document.createElement('div'); card.className = 'post-card';
           if (post.i === Math.max(...postsData.map(p => p.i))) {
-            const newTag = document.createElement('div');
-            newTag.className = 'new-tag';
-            newTag.textContent = 'নিউ';
-            card.appendChild(newTag);
+            const newTag = document.createElement('div'); newTag.className = 'new-tag'; newTag.textContent = 'নিউ'; card.appendChild(newTag);
           }
-
-          const imgEl = document.createElement('img');
-          imgEl.className = 'main';
-          imgEl.src = post.imgs[0] || '';
-          imgEl.alt = post.title;
-          card.appendChild(imgEl);
-
-          const caption = document.createElement('div');
-          caption.className = 'caption';
-          const link = document.createElement('a');
-          link.href = post.file;
-          link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
-          link.style.color = '#2196F3';
-          link.style.textDecoration = 'none';
-          caption.appendChild(link);
-          card.appendChild(caption);
-
+          const imgEl = document.createElement('img'); imgEl.className = 'main'; imgEl.src = post.imgs[0] || ''; imgEl.alt = post.title; card.appendChild(imgEl);
+          const caption = document.createElement('div'); caption.className = 'caption';
+          const link = document.createElement('a'); link.href = post.file; link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
+          link.style.color = '#2196F3'; link.style.textDecoration = 'none'; caption.appendChild(link); card.appendChild(caption);
           if (post.imgs.length > 1) {
-            const galleryContainer = document.createElement('div');
-            galleryContainer.className = 'gallery-container';
-            const galleryDate = document.createElement('div');
-            galleryDate.className = 'gallery-date';
-            galleryDate.textContent = post.date || 'তারিখ নেই';
-            galleryContainer.appendChild(galleryDate);
-            const gallery = document.createElement('div');
-            gallery.className = 'gallery';
+            const galleryContainer = document.createElement('div'); galleryContainer.className = 'gallery-container';
+            const galleryDate = document.createElement('div'); galleryDate.className = 'gallery-date'; galleryDate.textContent = post.date || 'তারিখ নেই'; galleryContainer.appendChild(galleryDate);
+            const gallery = document.createElement('div'); gallery.className = 'gallery';
             post.imgs.slice(1).forEach(src => {
-              const linkThumb = document.createElement('a');
-              linkThumb.className = 'thumb-link';
-              linkThumb.href = post.file;
-              const thumb = document.createElement('img');
-              thumb.className = 'thumb';
-              thumb.src = src;
-              thumb.alt = post.title;
-              linkThumb.appendChild(thumb);
-              gallery.appendChild(linkThumb);
+              const linkThumb = document.createElement('a'); linkThumb.className = 'thumb-link'; linkThumb.href = post.file;
+              const thumb = document.createElement('img'); thumb.className = 'thumb'; thumb.src = src; thumb.alt = post.title;
+              linkThumb.appendChild(thumb); gallery.appendChild(linkThumb);
             });
-            galleryContainer.appendChild(gallery);
-            card.appendChild(galleryContainer);
+            galleryContainer.appendChild(gallery); card.appendChild(galleryContainer);
           }
-
           list.appendChild(card);
         });
       }
 
-      // Event Listeners
       prevBtn.addEventListener('click', () => loadPage(currentPage - 1));
       nextBtn.addEventListener('click', () => loadPage(currentPage + 1));
       searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
       dateInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
-
-      // Initial load
       loadPage(1);
     });
   </script></body>
