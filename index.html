@@ -1,7 +1,6 @@
-<!DOCTYPE html><html lang="bn">
-<head>
+<!DOCTYPE html><html lang="bn"><head>
   <meta charset="UTF-8">
-  <title>আমার ডায়রি</title>
+  <title>DK Shuvo's Journey</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
@@ -61,19 +60,12 @@
 }
 
 /* Age Display & Journey */
-#age-display, #journey {
-  margin: 0.5rem 0;
-}
+#age-display, #journey { margin: 0.5rem 0; }
 #journey { font-size: 1.2rem; color: #f8bbd0; }
 
 /* Controls */
-#controls {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 2rem 0;
-  flex-wrap: wrap;
-}
+#controls { display: flex; justify-content: space-between; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
+
 #searchInput, .date-wrapper {
   position: relative;
   flex: 1 1 48%;
@@ -91,7 +83,7 @@
   color: #2196F3;
   font-size: 1.2rem;
 }
-#searchBox, .date-wrapper input[type="date"] {
+#searchBox, .date-wrapper input[type="month"] {
   flex: 1;
   border: none;
   background: transparent;
@@ -101,10 +93,10 @@
   appearance: none;
 }
 
-/* Post Grid */
+/* Post Grid - always two columns */
 #post-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   max-width: 100%;
   margin: 0 auto;
@@ -122,7 +114,9 @@
 }
 .post-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
 .post-card img.main {
-  width: 100%; height: 200px; object-fit: cover;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
   border-bottom: 4px solid #2196F3;
 }
 .post-card .caption {
@@ -132,9 +126,13 @@
   text-align: center;
 }
 .new-tag {
-  position: absolute; top: 10px; right: 10px;
-  background-color: #ffeb3b; color: #0f1117;
-  padding: 6px 12px; border-radius: 5px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ffeb3b;
+  color: #0f1117;
+  padding: 6px 12px;
+  border-radius: 5px;
   font-size: 1rem;
 }
 
@@ -149,8 +147,10 @@
 }
 .thumb-link { display: inline-block; outline: none; }
 .thumb {
-  width: 50px; height: 50px;
-  object-fit: cover; border-radius: 4px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
   border: 2px solid #2196F3;
   transition: transform 0.2s ease;
   cursor: pointer;
@@ -180,23 +180,32 @@
 /* Modal */
 .modal {
   display: none;
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.7);
-  justify-content: center; align-items: center;
+  justify-content: center;
+  align-items: center;
   z-index: 1001;
 }
 .modal-content {
   background: #303030;
   padding: 1.5rem;
   border-radius: 12px;
-  width: 90%; max-width: 400px;
+  width: 90%;
+  max-width: 400px;
   text-align: left;
 }
 .modal-content input, .modal-content textarea {
-  width: 100%; padding: 0.8rem; margin-bottom: 1rem;
-  border: none; border-radius: 8px;
-  background: #424242; color: #e0e0e0;
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #424242;
+  color: #e0e0e0;
   box-sizing: border-box;
 }
 
@@ -205,28 +214,24 @@
   h1 { font-size: 2.2rem; }
   #controls { flex-direction: column; align-items: stretch; }
 }
-@media (max-width: 480px) {
-  #post-list { grid-template-columns: 1fr; }
-}
 
   </style>
-</head>
-<body>
+</head><body>
   <div id="birthday-banner">আজকে আমার জন্মদিন 🎉</div>
   <header>
-    <h1>আমার প্রতিদিনের ডায়রি</h1>
-    <p>আপনার অনুভব করা দিনগুলো খুঁজে নিন...</p>
+    <h2>DK Shuvo's Journey</h2>
+    <p>আপডেট রাত ৮ টায়...</p>
     <div id="age-display"></div>
-    <div id="journey">DK Shuvo's Journey</div>
+    <div id="journey">আমরা সাকসেস ছিনিয়ে আনতে জানি...</div>
     <button id="messageBtn" class="btn-icon"><i class="fas fa-envelope"></i></button>
   </header>  <div id="controls">
     <div id="searchInput">
       <i class="fas fa-search search-icon"></i>
-      <input type="text" id="searchBox" placeholder="কিওয়ার্ড লিখুন">
+      <input type="text" id="searchBox" placeholder="শিরোনাম সার্চ করুন...">
     </div>
     <div class="date-wrapper">
       <i class="fas fa-calendar-alt"></i>
-      <input type="date" id="dateInput">
+      <input type="month" id="monthInput">
     </div>
   </div>  <div id="post-list"></div>
   <div class="pagination" id="pagination"></div>  <!-- Message Modal -->  <div id="msgModal" class="modal">
@@ -241,7 +246,7 @@
     const TELEGRAM_BOT_TOKEN = "7590766158:AAFTMfMpGQkg_4iw3UyOiGX4NdarPIvcwRE";
     const TELEGRAM_CHAT_ID = "6807445600";
 
-    // Birthday banner & age
+    // Birthday & Age Calculation
     function checkBirthday() {
       const today = new Date();
       if (today.getMonth() === 6 && today.getDate() === 13) {
@@ -253,40 +258,35 @@
       let days = today.getDate() - birth.getDate();
       if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
       if (months < 0) { years--; months += 12; }
-      document.getElementById('age-display').textContent = `বয়স: ${years} বছর ${months} মাস ${days} দিন`;
+      document.getElementById('age-display').textContent = `আমার বর্তমান বয়স: ${years} বছর ${months} মাস ${days} দিন`;
     }
 
-    // Message modal
+    // Message Modal Functionality
     const msgBtn = document.getElementById('messageBtn');
     const modal = document.getElementById('msgModal');
     msgBtn.addEventListener('click', () => modal.style.display = 'flex');
     modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
-
     document.getElementById('sendMsgBtn').addEventListener('click', () => {
       const name = document.getElementById('msgName').value;
       const phone = document.getElementById('msgPhone').value;
       const text = document.getElementById('msgText').value;
       const payload = `নাম: ${name}\nফোন: ${phone}\nমেসেজ: ${text}`;
       fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: payload })
-      }).then(() => {
-        alert('মেসেজ পাঠানো হয়েছে!');
-        modal.style.display = 'none';
-      }).catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
+      }).then(() => { alert('মেসেজ পাঠানো হয়েছে!'); modal.style.display = 'none'; })
+        .catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
     });
 
-    // Diary posts
+    // Diary Posts Loading & Filtering
     document.addEventListener('DOMContentLoaded', () => {
       checkBirthday();
       const pageSize = 20;
       let currentPage = 1;
       let postsData = [];
       const searchInput = document.getElementById('searchBox');
-      const dateInput = document.getElementById('dateInput');
+      const monthInput = document.getElementById('monthInput');
       const pagination = document.getElementById('pagination');
-
       const prevBtn = document.createElement('button');
       prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';
       const nextBtn = document.createElement('button');
@@ -319,7 +319,7 @@
         postsData.sort((a, b) => b.i - a.i);
         currentPage = page;
         updateButtons();
-        renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value });
+        renderPosts({ keyword: searchInput.value.trim(), month: monthInput.value });
       }
 
       function updateButtons() {
@@ -332,22 +332,26 @@
         list.innerHTML = '';
         const filtered = postsData.filter(post => {
           const kw = filter.keyword;
-          const dt = filter.date;
+          const mn = filter.month;
           return (!kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw)))
-            && (!dt || post.date === dt);
+            && (!mn || (post.date && post.date.startsWith(mn)));
         });
         filtered.forEach(post => {
           const card = document.createElement('div'); card.className = 'post-card';
           if (post.i === Math.max(...postsData.map(p => p.i))) {
             const newTag = document.createElement('div'); newTag.className = 'new-tag'; newTag.textContent = 'নিউ'; card.appendChild(newTag);
           }
-          const imgEl = document.createElement('img'); imgEl.className = 'main'; imgEl.src = post.imgs[0] || ''; imgEl.alt = post.title; card.appendChild(imgEl);
+          const imgEl = document.createElement('img'); imgEl.className = 'main'; imgEl.src = post.imgs[0] || '';
+          imgEl.alt = post.title; card.appendChild(imgEl);
           const caption = document.createElement('div'); caption.className = 'caption';
-          const link = document.createElement('a'); link.href = post.file; link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
-          link.style.color = '#2196F3'; link.style.textDecoration = 'none'; caption.appendChild(link); card.appendChild(caption);
+          const link = document.createElement('a'); link.href = post.file;
+          link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
+          link.style.color = '#2196F3'; link.style.textDecoration = 'none';
+          caption.appendChild(link); card.appendChild(caption);
           if (post.imgs.length > 1) {
             const galleryContainer = document.createElement('div'); galleryContainer.className = 'gallery-container';
-            const galleryDate = document.createElement('div'); galleryDate.className = 'gallery-date'; galleryDate.textContent = post.date || 'তারিখ নেই'; galleryContainer.appendChild(galleryDate);
+            const galleryDate = document.createElement('div'); galleryDate.className = 'gallery-date';
+            galleryDate.textContent = post.date || 'তারিখ নেই'; galleryContainer.appendChild(galleryDate);
             const gallery = document.createElement('div'); gallery.className = 'gallery';
             post.imgs.slice(1).forEach(src => {
               const linkThumb = document.createElement('a'); linkThumb.className = 'thumb-link'; linkThumb.href = post.file;
@@ -362,9 +366,8 @@
 
       prevBtn.addEventListener('click', () => loadPage(currentPage - 1));
       nextBtn.addEventListener('click', () => loadPage(currentPage + 1));
-      searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
-      dateInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
+      searchInput.addEventListener('input', () => renderPosts({ keyword: searchInput.value.trim(), month: monthInput.value }));
+      monthInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), month: monthInput.value }));
       loadPage(1);
     });
-  </script></body>
-  </html>
+  </script></body></html>
