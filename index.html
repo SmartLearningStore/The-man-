@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="bn"><head>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
   <meta charset="UTF-8">
   <title>DK Shuvo's Journey</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,224 +11,189 @@
       font-family: 'Siyam Rupali', sans-serif;
       background: #212121;
       margin: 0;
-      padding: 1rem;
+      padding: 0;
       color: #e0e0e0;
       box-sizing: border-box;
       overflow-x: hidden;
       text-align: center;
+      padding-top: 80px; /* fixed header space */
     }
+
+    /* Fixed Header (Buttons + Profile) */
+    #fixedHeader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #212121;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.8), inset 0 0 0 rgba(255,255,255,0.1);
+      perspective: 1000px;
+      z-index: 1000;
+    }
+    #fixedHeader .btn-icon {
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transform: translateZ(0);
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.7), -5px -5px 15px rgba(255,255,255,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #fixedHeader .btn-icon:hover {
+      transform: translateY(-6px) translateZ(20px);
+      box-shadow: 10px 10px 25px rgba(0,0,0,0.8), -10px -10px 25px rgba(255,255,255,0.1);
+    }
+    #profile-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      transform: translateZ(0);
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.7), -5px -5px 15px rgba(255,255,255,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #profile-icon:hover {
+      transform: scale(1.1) translateZ(20px);
+      box-shadow: 10px 10px 25px rgba(0,0,0,0.8), -10px -10px 25px rgba(255,255,255,0.1);
+    }
+
+    /* Main Header */
     header {
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
       margin-bottom: 1.5rem;
       text-shadow: 1px 1px 8px #2196F3;
+      perspective: 1000px;
     }
-    h1 {
-      font-size: 2.8rem;
+    header h2 {
+      font-size: 2.4rem;
       color: #2196F3;
-      margin-bottom: 0.3rem;
-      transform: perspective(500px) rotateX(12deg);
+      margin: 0;
+      transform: rotateX(12deg);
       transition: transform 0.3s ease;
     }
-    h1:hover { transform: perspective(500px) rotateX(25deg); }
-    p { font-size: 1rem; color: #b0bec5; line-height: 1.6; }/* Icon Button */
-.btn-icon {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  outline: 2px solid #2196F3;
-  background: transparent;
-  color: #2196F3;
-  padding: 0.6rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  font-size: 1.2rem;
-}
-.btn-icon:active { transform: scale(0.9); }
+    header h2:hover { transform: rotateX(25deg); }
+    header p { font-size: 0.9rem; color: #b0bec5; margin: 0; }
 
-/* Birthday Banner */
-#birthday-banner {
-  display: none;
-  background: #ffeb3b;
-  color: #0f1117;
-  padding: 0.8rem 0;
-  font-size: 1.2rem;
-  font-weight: bold;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
+    /* Birthday Banner */
+    #birthday-banner {
+      display: none;
+      background: #ffeb3b;
+      color: #0f1117;
+      padding: 0.8rem 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
 
-/* Age Display & Journey */
-#age-display, #journey { margin: 0.5rem 0; }
-#journey { font-size: 1.2rem; color: #f8bbd0; }
+    /* Age Display & Journey */
+    #age-display, #journey { margin: 0.5rem 0; }
+    #journey { font-size: 1.2rem; color: #f8bbd0; }
 
-/* Controls */
-#controls { display: flex; justify-content: space-between; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
-#searchInput, .date-wrapper {
-  position: relative;
-  flex: 1 1 48%;
-  display: flex;
-  align-items: center;
-  background: #424242;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  padding-left: 2rem;
-  min-width: 200px;
-}
-#searchInput .search-icon, .date-wrapper i {
-  position: absolute;
-  left: 10px;
-  color: #2196F3;
-  font-size: 1.2rem;
-}
-#searchBox, .date-wrapper input[type="month"] {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: #e0e0e0;
-  font-size: 1rem;
-  padding: 0.8rem;
-  appearance: none;
-}
+    /* Controls (search & calendar) */
+    #controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    #searchInput, .date-wrapper {
+      position: relative;
+      width: 200px;
+      display: flex;
+      align-items: center;
+      background: #424242;
+      border-radius: 12px;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.5), -4px -4px 12px rgba(255,255,255,0.05);
+      padding-left: 2rem;
+      padding-right: 1rem;
+    }
+    #searchInput .search-icon, .date-wrapper i {
+      position: absolute;
+      left: 10px;
+      color: #2196F3;
+      font-size: 1.2rem;
+    }
+    #searchBox, .date-wrapper input[type="month"] {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: #e0e0e0;
+      font-size: 0.9rem;
+      padding: 0.6rem;
+      appearance: none;
+    }
 
-/* Post Grid */
-#post-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-.post-card {
-  background: #303030;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-.post-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
-.post-card img.main {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-bottom: 4px solid #2196F3;
-}
-.post-card .caption {
-  padding: 1rem;
-  color: #f8bbd0;
-  font-size: 1.2rem;
-  text-align: center;
-}
-.new-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #ffeb3b;
-  color: #0f1117;
-  padding: 6px 12px;
-  border-radius: 5px;
-  font-size: 1rem;
-}
+    /* Post Grid */
+    #post-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:1.5rem; max-width:100%; margin:0 auto; padding:0 1rem; }
+    .post-card { background:#303030; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.6); transition:transform 0.3s ease,box-shadow 0.3s ease; display:flex; flex-direction:column; }
+    .post-card:hover { transform: translateY(-8px); box-shadow:0 8px 30px rgba(0,0,0,0.7); }
+    .post-card img.main { width:100%; height:200px; object-fit:cover; border-bottom:4px solid #2196F3; }
+    .post-card .caption { padding:1rem; color:#f8bbd0; font-size:1.2rem; text-align:center; }
+    .new-tag { position:absolute; top:10px; right:10px; background:#ffeb3b; color:#0f1117; padding:6px 12px; border-radius:5px; font-size:1rem; }
 
-/* Gallery Grid */
-.gallery-container { padding: 0.5rem; background: #424242; }
-.gallery-date { color: #b0bec5; font-size: 0.9rem; margin-bottom: 0.5rem; }
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  justify-items: center;
-}
-.thumb-link { display: inline-block; outline: none; }
-.thumb {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 2px solid #2196F3;
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-.thumb-link:hover .thumb { transform: scale(1.1); }
+    /* Gallery Grid */
+    .gallery-container { padding:0.5rem; background:#424242; }
+    .gallery-date { color:#b0bec5; font-size:0.9rem; margin-bottom:0.5rem; }
+    .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:0.5rem; justify-items:center; }
+    .thumb-link { display:inline-block; outline:none; }
+    .thumb { width:50px; height:50px; object-fit:cover; border-radius:4px; border:2px solid #2196F3; transition:transform 0.2s ease; cursor:pointer; }
+    .thumb-link:hover .thumb { transform:scale(1.1); }
 
-/* Pagination Buttons */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.btn {
-  outline: 2px solid #2196F3;
-  background: transparent;
-  color: #2196F3;
-  padding: 0.8rem 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  font-size: 1rem;
-}
-.btn:active { transform: scale(0.95); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* Pagination Buttons */
+    .btn { background:linear-gradient(145deg,#2a2a2a,#343434); box-shadow:4px 4px 12px rgba(0,0,0,0.7),-4px -4px 12px rgba(255,255,255,0.05); border:none; border-radius:12px; padding:0.8rem 1.2rem; cursor:pointer; transition:transform 0.2s ease,box-shadow 0.2s ease; font-size:1rem; color:#2196F3; }
+    .btn:hover { transform:translateY(-3px); box-shadow:6px 6px 16px rgba(0,0,0,0.8),-6px -6px 16px rgba(255,255,255,0.05); }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; box-shadow:none; }
 
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  justify-content: center;
-  align-items: center;
-  z-index: 1001;
-}
-.modal-content {
-  background: #303030;
-  padding: 1.5rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  text-align: left;
-}
-.modal-content input, .modal-content textarea {
-  width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1rem;
-  border: none;
-  border-radius: 8px;
-  background: #424242;
-  color: #e0e0e0;
-  box-sizing: border-box;
-}
+    /* Modal */
+    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1001; }
+    .modal-content { background:#303030; padding:1.5rem; border-radius:12px; width:90%; max-width:400px; text-align:left; }
+    .modal-content input, .modal-content textarea { width:100%; padding:0.8rem; margin-bottom:1rem; border:none; border-radius:8px; background:#424242; color:#e0e0e0; box-sizing:border-box; }
 
-/* Responsive */
-@media (max-width: 768px) {
-  h1 { font-size: 2.2rem; }
-  #controls { flex-direction: column; align-items: stretch; }
-}
-@media (max-width: 480px) {
-  #post-list { grid-template-columns: 1fr; }
-}
-
+    /* Responsive */
+    @media (max-width:768px) { header { flex-direction:column; } }
+    @media (max-width:480px) { #post-list { grid-template-columns:1fr; } }
   </style>
-</head><body>
+</head>
+<body>
+  <!-- Fixed Header -->
+  <div id="fixedHeader">
+    <button id="forYouBtn" class="btn-icon">For you</button>
+    <img src="ss.jpg" id="profile-icon" alt="Profile">
+    <button id="messageBtn" class="btn-icon"><i class="fas fa-envelope"></i></button>
+  </div>
+
+  <!-- Birthday Banner -->
   <div id="birthday-banner">আজকে আমার জন্মদিন 🎉</div>
+
+  <!-- Main Header -->
   <header>
     <h2>DK Shuvo's Journey</h2>
     <p>আপডেট রাত ৮ টায়...</p>
-    <div id="age-display"></div>
-    <div id="journey">আমরা সাকসেস ছিনিয়ে আনতে জানি...</div>
-    <button id="messageBtn" class="btn-icon"><i class="fas fa-envelope"></i></button>
-  </header>  <div id="controls">
+  </header>
+
+  <div id="age-display"></div>
+  <div id="journey">আমরা সাকসেস ছিনিয়ে আনতে জানি...</div>
+
+  <!-- Controls -->
+  <div id="controls">
     <div id="searchInput">
       <i class="fas fa-search search-icon"></i>
       <input type="text" id="searchBox" placeholder="শিরোনাম সার্চ করুন...">
@@ -235,8 +202,14 @@
       <i class="fas fa-calendar-alt"></i>
       <input type="month" id="dateInput">
     </div>
-  </div>  <div id="post-list"></div>
-  <div class="pagination" id="pagination"></div>  <!-- Message Modal -->  <div id="msgModal" class="modal">
+  </div>
+
+  <!-- Posts -->
+  <div id="post-list"></div>
+  <div class="pagination" id="pagination"></div>
+
+  <!-- Message Modal -->
+  <div id="msgModal" class="modal">
     <div class="modal-content">
       <h3>মেসেজ পাঠান</h3>
       <input type="text" id="msgName" placeholder="নাম">
@@ -244,11 +217,12 @@
       <textarea id="msgText" rows="4" placeholder="মেসেজ লিখুন..."></textarea>
       <button id="sendMsgBtn" class="btn">সেন্ড</button>
     </div>
-  </div>  <script>
+  </div>
+
+  <script>
     const TELEGRAM_BOT_TOKEN = "7590766158:AAFTMfMpGQkg_4iw3UyOiGX4NdarPIvcwRE";
     const TELEGRAM_CHAT_ID = "6807445600";
 
-    // Birthday banner & age
     function checkBirthday() {
       const today = new Date();
       if (today.getMonth() === 6 && today.getDate() === 13) {
@@ -258,44 +232,69 @@
       let years = today.getFullYear() - birth.getFullYear();
       let months = today.getMonth() - birth.getMonth();
       let days = today.getDate() - birth.getDate();
-      if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
-      if (months < 0) { years--; months += 12; }
+      if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
       document.getElementById('age-display').textContent = `আমার বর্তমান বয়স: ${years} বছর ${months} মাস ${days} দিন`;
     }
 
-    // Message modal
-    const msgBtn = document.getElementById('messageBtn');
-    const modal = document.getElementById('msgModal');
-    msgBtn.addEventListener('click', () => modal.style.display = 'flex');
-    modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
-
-    document.getElementById('sendMsgBtn').addEventListener('click', () => {
-      const name = document.getElementById('msgName').value;
-      const phone = document.getElementById('msgPhone').value;
-      const text = document.getElementById('msgText').value;
-      const payload = `নাম: ${name}\nফোন: ${phone}\nমেসেজ: ${text}`;
-      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: payload })
-      }).then(() => {
-        alert('মেসেজ পাঠানো হয়েছে!');
-        modal.style.display = 'none';
-      }).catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
-    });
-
-    // Diary posts
     document.addEventListener('DOMContentLoaded', () => {
       checkBirthday();
+
+      // For you Button Toggle
+      const forYouBtn = document.getElementById('forYouBtn');
+      let showText = true;
+      forYouBtn.addEventListener('click', () => window.location.href = 'Recommend.html');
+      setInterval(() => {
+        forYouBtn.innerHTML = showText ? '<i class="fas fa-heart"></i>' : 'For you';
+        showText = !showText;
+      }, 5000);
+
+      // Message Modal
+      const msgBtn = document.getElementById('messageBtn');
+      const modal = document.getElementById('msgModal');
+      msgBtn.addEventListener('click', () => modal.style.display = 'flex');
+      modal.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+
+      document.getElementById('sendMsgBtn').addEventListener('click', () => {
+        const name = document.getElementById('msgName').value;
+        const phone = document.getElementById('msgPhone').value;
+        const text = document.getElementById('msgText').value;
+        const payload = `নাম: ${name}\nফোন: ${phone}\nমেসেজ: ${text}`;
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: payload })
+        })
+          .then(() => {
+            alert('মেসেজ পাঠানো হয়েছে!');
+            modal.style.display = 'none';
+          })
+          .catch(() => alert('পাঠাতে সমস্যা হয়েছে।'));
+      });
+
+      // Diary posts logic (যেমন আগেই ছিল)
       const pageSize = 20;
       let currentPage = 1;
       let postsData = [];
       const searchInput = document.getElementById('searchBox');
       const dateInput = document.getElementById('dateInput');
       const pagination = document.getElementById('pagination');
-
-      const prevBtn = document.createElement('button'); prevBtn.id = 'prevBtn'; prevBtn.className = 'btn'; prevBtn.textContent = 'Prev';
-      const nextBtn = document.createElement('button'); nextBtn.id = 'nextBtn'; nextBtn.className = 'btn'; nextBtn.textContent = 'Next';
+      const prevBtn = document.createElement('button');
+      prevBtn.id = 'prevBtn';
+      prevBtn.className = 'btn';
+      prevBtn.textContent = 'Prev';
+      const nextBtn = document.createElement('button');
+      nextBtn.id = 'nextBtn';
+      nextBtn.className = 'btn';
+      nextBtn.textContent = 'Next';
       pagination.append(prevBtn, nextBtn);
 
       async function loadPage(page) {
@@ -303,25 +302,19 @@
         const start = (page - 1) * pageSize + 1;
         const end = page * pageSize;
         const fetches = [];
-
         for (let i = start; i <= end; i++) {
-          const file = `post-${i}.html`;
-          fetches.push(
-            fetch(file)
-              .then(res => res.ok ? res.text() : Promise.reject())
-              .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const dateMeta = doc.querySelector('meta[name="date"]');
-                const date = dateMeta ? dateMeta.content : null;
-                const title = doc.querySelector('h1')?.textContent || `পোস্ট ${i}`;
-                const imgs = Array.from(doc.querySelectorAll('img')).map(img => img.src);
-                postsData.push({ i, file, title, date, imgs });
-              })
-              .catch(() => {})
-          );
+          fetches.push(fetch(`post-${i}.html`)
+            .then(res => res.ok ? res.text() : Promise.reject())
+            .then(html => {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              const dateMeta = doc.querySelector('meta[name="date"]');
+              const date = dateMeta ? dateMeta.content : null;
+              const title = doc.querySelector('h1')?.textContent || `পোস্ট ${i}`;
+              const imgs = Array.from(doc.querySelectorAll('img')).map(img => img.src);
+              postsData.push({ i, file: `post-${i}.html`, title, date, imgs });
+            }).catch(() => { }));
         }
-
         await Promise.all(fetches);
         postsData.sort((a, b) => b.i - a.i);
         currentPage = page;
@@ -337,33 +330,57 @@
       function renderPosts(filter = {}) {
         const list = document.getElementById('post-list');
         list.innerHTML = '';
-        const filtered = postsData.filter(post => {
-          const kw = filter.keyword;
-          const dt = filter.date; // format YYYY-MM
-          return (!kw || post.title.includes(kw) || post.imgs.some(src => src.includes(kw)))
-            && (!dt || (post.date && post.date.startsWith(dt)));
-        });
-
+        const filtered = postsData.filter(post =>
+          (!filter.keyword || post.title.includes(filter.keyword) || post.imgs.some(src => src.includes(filter.keyword))) &&
+          (!filter.date || (post.date && post.date.startsWith(filter.date)))
+        );
         filtered.forEach(post => {
-          const card = document.createElement('div'); card.className = 'post-card';
+          const card = document.createElement('div');
+          card.className = 'post-card';
           if (post.i === Math.max(...postsData.map(p => p.i))) {
-            const newTag = document.createElement('div'); newTag.className = 'new-tag'; newTag.textContent = 'নিউ'; card.appendChild(newTag);
+            const newTag = document.createElement('div');
+            newTag.className = 'new-tag';
+            newTag.textContent = 'নিউ';
+            card.appendChild(newTag);
           }
-          const imgEl = document.createElement('img'); imgEl.className = 'main'; imgEl.src = post.imgs[0] || ''; imgEl.alt = post.title; card.appendChild(imgEl);
-          const caption = document.createElement('div'); caption.className = 'caption';
-          const link = document.createElement('a'); link.href = post.file;
+          const imgEl = document.createElement('img');
+          imgEl.className = 'main';
+          imgEl.src = post.imgs[0] || '';
+          imgEl.alt = post.title;
+          card.appendChild(imgEl);
+
+          const caption = document.createElement('div');
+          caption.className = 'caption';
+          const link = document.createElement('a');
+          link.href = post.file;
           link.textContent = `${post.title} (${post.date || 'তারিখ নেই'})`;
-          link.style.color = '#2196F3'; link.style.textDecoration = 'none'; caption.appendChild(link); card.appendChild(caption);
+          link.style.color = '#2196F3';
+          link.style.textDecoration = 'none';
+          caption.appendChild(link);
+          card.appendChild(caption);
 
           if (post.imgs.length > 1) {
-            const galleryContainer = document.createElement('div'); galleryContainer.className = 'gallery-container';
-            const galleryDate = document.createElement('div'); galleryDate.className = 'gallery-date'; galleryDate.textContent = post.date || 'তারিখ নেই'; galleryContainer.appendChild(galleryDate);
-            const gallery = document.createElement('div'); gallery.className = 'gallery';
+            const galleryContainer = document.createElement('div');
+            galleryContainer.className = 'gallery-container';
+            const galleryDate = document.createElement('div');
+            galleryDate.className = 'gallery-date';
+            galleryDate.textContent = post.date || 'তারিখ নেই';
+            galleryContainer.appendChild(galleryDate);
+            const gallery = document.createElement('div');
+            gallery.className = 'gallery';
             post.imgs.slice(1).forEach(src => {
-              const linkThumb = document.createElement('a'); linkThumb.className = 'thumb-link'; linkThumb.href = post.file;
-              const thumb = document.createElement('img'); thumb.className = 'thumb'; thumb.src = src; thumb.alt = post.title; linkThumb.appendChild(thumb); gallery.appendChild(linkThumb);
+              const linkThumb = document.createElement('a');
+              linkThumb.className = 'thumb-link';
+              linkThumb.href = post.file;
+              const thumb = document.createElement('img');
+              thumb.className = 'thumb';
+              thumb.src = src;
+              thumb.alt = post.title;
+              linkThumb.appendChild(thumb);
+              gallery.appendChild(linkThumb);
             });
-            galleryContainer.appendChild(gallery); card.appendChild(galleryContainer);
+            galleryContainer.appendChild(gallery);
+            card.appendChild(galleryContainer);
           }
           list.appendChild(card);
         });
@@ -375,4 +392,6 @@
       dateInput.addEventListener('change', () => renderPosts({ keyword: searchInput.value.trim(), date: dateInput.value }));
       loadPage(1);
     });
-  </script></body></html>
+  </script>
+</body>
+                                                                              </html>
