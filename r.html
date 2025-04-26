@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diary Home</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --fg: #e0e0e0;
+      --accent: #1e90ff;
+      --card-bg: #1e1e1e;
+      --btn-bg: #1e90ff;
+      --btn-hover: #559fff;
+    }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 1rem;
+    }
+    /* Banner */
+    #banner {
+      background: var(--accent);
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+      animation: slideDown 1s ease-out;
+    }
+    #banner h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    #banner button {
+      background: var(--btn-bg);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      color: #fff;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+      transition: background 0.3s;
+    }
+    #banner button:hover {
+      background: var(--btn-hover);
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity:0; }
+      to { transform: translateY(0); opacity:1; }
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 2rem;
+    }
+    section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.5rem;
+    }
+    /* Grid for cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .thumb {
+      width:100%; height:140px; object-fit:cover;
+      background: #333;
+    }
+    .card-content {
+      padding: 0.75rem;
+      flex:1;
+      display:flex; flex-direction:column;
+    }
+    .card-content a {
+      color: var(--fg);
+      text-decoration: none;
+      font-weight: bold;
+      margin-bottom: auto;
+    }
+    .card-content .date {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="banner">
+    <h1>📝 আপনার ডায়েরি - স্বয়ংক্রিয় রিকমেন্ডেশন</h1>
+    <button onclick="scrollToSection('recent')">সাম্প্রতিক দেখুন</button>
+  </div>
+
+  <section id="recent">
+    <h2>🔔 সাম্প্রতিক পোস্ট</h2>
+    <div id="recent-posts" class="grid">
+      <!-- আজ/কাল/পরশু: এখানে JS ভরবে -->
+    </div>
+  </section>
+
+  <section id="recommend">
+    <h2>💡 রেকমেন্ডেশন (২০টি)</h2>
+    <div id="recommendations" class="grid">
+      <!-- ২০ র‍্যান্ডম পোস্ট এখানে JS ভরবে -->
+    </div>
+  </section>
+
+  <script>
+    const startDate = new Date('2025-04-26'); // প্রথম পোস্টের তারিখ
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    function computePostNumber(date) {
+      const diff = Math.floor((date - startDate)/(1000*60*60*24));
+      return diff + 1;
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior:'smooth' });
+    }
+
+    // পরীক্ষা করে দেখবে 'post-N.html' আছে কিনা (HEAD)
+    async function existsPost(n) {
+      try {
+        const res = await fetch(`post-${n}.html`, { method:'HEAD' });
+        return res.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    // এক্সপোনেনশিয়াল+বাইনারি সার্চ দিয়ে সর্বোচ্চ পোস্ট নম্বর খুঁজে নেয়
+    async function findMaxPosts() {
+      let lo = 1, hi = 2;
+      while (await existsPost(hi)) {
+        lo = hi;
+        hi *= 2;
+      }
+      // binary search in [lo, hi)
+      while (hi - lo > 1) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (await existsPost(mid)) lo = mid;
+        else hi = mid;
+      }
+      return lo;
+    }
+
+    // একটি পোস্টের টাইটেল ও প্রথম ইমেজ লোড করবে
+    async function getPostData(n) {
+      const url = `post-${n}.html`;
+      try {
+        const txt = await fetch(url).then(r=>r.text());
+        const doc = new DOMParser().parseFromString(txt, 'text/html');
+        const title = doc.querySelector('title')?.innerText || `Post ${n}`;
+        const imgEl = doc.querySelector('img');
+        const img = imgEl ? new URL(imgEl.getAttribute('src'), location).href : '';
+        return { n, title, img, url };
+      } catch {
+        return null;
+      }
+    }
+
+    // কার্ড তৈরি
+    function makeCard({n, title, img, url}, dateLabel='') {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML = `
+        ${img ? `<img class="thumb" src="${img}" alt="${title}">` : `<div class="thumb"></div>`}
+        <div class="card-content">
+          <a href="${url}">${title}</a>
+          ${dateLabel ? `<div class="date">${dateLabel}</div>` : ''}
+        </div>
+      `;
+      return div;
+    }
+
+    // মেইন ফ্লো
+    (async ()=>{
+      const maxPosts = await findMaxPosts();
+
+      // সাম্প্রতিক: আজ, কাল, পরশু
+      const numbers = [
+        {label:'আজ', num: computePostNumber(today)},
+        {label:'কাল', num: computePostNumber(new Date(today.getTime() + 1*24*60*60*1000))},
+        {label:'পরশু', num: computePostNumber(new Date(today.getTime() - 1*24*60*60*1000))}
+      ];
+      const recentContainer = document.getElementById('recent-posts');
+      for (let {label,num} of numbers) {
+        if (num>=1 && num<=maxPosts) {
+          const data = await getPostData(num);
+          if (data) recentContainer.appendChild(makeCard(data, label));
+        }
+      }
+
+      // র‍্যান্ডম ২০
+      const recContainer = document.getElementById('recommendations');
+      const chosen = new Set();
+      while (chosen.size < Math.min(20, maxPosts)) {
+        chosen.add(Math.floor(Math.random() * maxPosts) + 1);
+      }
+      for (let n of chosen) {
+        const data = await getPostData(n);
+        if (data) recContainer.appendChild(makeCard(data));
+      }
+
+    })();
+  </script>
+
+</body>
+  </html>
